@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class FakeStoreProductService implements ProductService{
+public class FakeStoreProductService implements ProductService {
 
     RestTemplate restTemplate;
 
@@ -24,10 +24,10 @@ public class FakeStoreProductService implements ProductService{
     }
 
     @Override
-    public Product getProductById(long id) {
+    public Product getProductById(Long id) {
         // call the rest template object and get the product by id
-       FakeStoreProductDTO fakeStoreProductDTO = restTemplate.getForObject("https://fakestoreapi.com/products/" +id, FakeStoreProductDTO.class);
-       // Convert the productDTO to product
+        FakeStoreProductDTO fakeStoreProductDTO = restTemplate.getForObject("https://fakestoreapi.com/products/" + id, FakeStoreProductDTO.class);
+        // Convert the productDTO to product
         if (fakeStoreProductDTO == null) {
             return null;
         }
@@ -55,30 +55,30 @@ public class FakeStoreProductService implements ProductService{
     public Product createProduct(ProductDTO productDTO) {
         RequestCallback requestCallback = restTemplate.httpEntityCallback(productDTO, FakeStoreProductDTO.class);
         HttpMessageConverterExtractor<FakeStoreProductDTO> responseExtractor = new HttpMessageConverterExtractor(FakeStoreProductDTO.class, restTemplate.getMessageConverters());
-        FakeStoreProductDTO fakeStoreProductDTO =  restTemplate.execute("https://fakestoreapi.com/products/", HttpMethod.POST, requestCallback, responseExtractor);
+        FakeStoreProductDTO fakeStoreProductDTO = restTemplate.execute("https://fakestoreapi.com/products/", HttpMethod.POST, requestCallback, responseExtractor);
         return fakeStoreProductDTO == null ? null : convertDtoToProduct(fakeStoreProductDTO);
     }
 
     @Override
-    public Product replaceProduct(long id, ProductDTO productDTO) {
+    public Product replaceProduct(Long id, ProductDTO productDTO) {
         RequestCallback requestCallback = restTemplate.httpEntityCallback(productDTO, FakeStoreProductDTO.class);
         HttpMessageConverterExtractor<FakeStoreProductDTO> responseExtractor = new HttpMessageConverterExtractor(FakeStoreProductDTO.class, restTemplate.getMessageConverters());
-        FakeStoreProductDTO fakeStoreProductDTO =  restTemplate.execute("https://fakestoreapi.com/products/" +id, HttpMethod.PUT, requestCallback, responseExtractor);
+        FakeStoreProductDTO fakeStoreProductDTO = restTemplate.execute("https://fakestoreapi.com/products/" + id, HttpMethod.PUT, requestCallback, responseExtractor);
         return fakeStoreProductDTO == null ? null : convertDtoToProduct(fakeStoreProductDTO);
     }
 
     @Override
-    public Product editProduct(long id, UpdateDescriptionOnlyDTO updateDescriptionOnlyDTO) {
-       FakeStoreProductDTO fakeStoreProductDTO =  restTemplate.patchForObject("https://fakestoreapi.com/products/" +id, updateDescriptionOnlyDTO, FakeStoreProductDTO.class);
+    public Product editProduct(Long id, UpdateDescriptionOnlyDTO updateDescriptionOnlyDTO) {
+        FakeStoreProductDTO fakeStoreProductDTO = restTemplate.patchForObject("https://fakestoreapi.com/products/" + id, updateDescriptionOnlyDTO, FakeStoreProductDTO.class);
         if (fakeStoreProductDTO == null) {
             return null;
         }
-       return convertDtoToProduct(fakeStoreProductDTO);
+        return convertDtoToProduct(fakeStoreProductDTO);
     }
 
     @Override
-    public void deleteProduct(long id) {
-        restTemplate.delete("https://fakestoreapi.com/products/" +id);
+    public void deleteProduct(Long id) {
+        restTemplate.delete("https://fakestoreapi.com/products/" + id);
     }
 
     public Product convertDtoToProduct(FakeStoreProductDTO productDTO) {
@@ -95,17 +95,4 @@ public class FakeStoreProductService implements ProductService{
         return product;
     }
 
-    public ProductDTO convertProductToProductDTO(Product product) {
-        ProductDTO productDTO = new ProductDTO();
-        productDTO.setId(product.getId());
-        productDTO.setTitle(product.getTitle());
-        productDTO.setPrice(product.getPrice());
-        productDTO.setDescription(product.getDescription());
-        productDTO.setImage(product.getImage());
-
-        Category category = new Category();
-        category.setCategoryName(product.getCategory().toString());
-        productDTO.setCategory(category.getCategoryName());
-        return productDTO;
-    }
 }

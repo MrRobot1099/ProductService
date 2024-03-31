@@ -7,10 +7,10 @@ import com.project.productservice.model.Product;
 import java.util.List;
 
 public interface ProductService {
-    public Product getProductById(long id);
+    public Product getProductById(Long id);
     public List<Product> getAllProducts();
     public Product createProduct(ProductDTO productDTO);
-    public Product replaceProduct(long id, ProductDTO productDTO);
-    public Product editProduct(long id, UpdateDescriptionOnlyDTO updateDescriptionOnlyDTO);
-    public void deleteProduct(long id);
+    public Product replaceProduct(Long id, ProductDTO productDTO);
+    public Product editProduct(Long id, UpdateDescriptionOnlyDTO updateDescriptionOnlyDTO);
+    public void deleteProduct(Long id);
 }
