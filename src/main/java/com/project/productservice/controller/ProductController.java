@@ -1,5 +1,7 @@
 package com.project.productservice.controller;
 
+import com.project.productservice.dtos.ProductDTO;
+import com.project.productservice.dtos.UpdateDescriptionOnlyDTO;
 import com.project.productservice.model.Product;
 import com.project.productservice.services.ProductService;
 import org.springframework.web.bind.annotation.*;
@@ -29,18 +31,19 @@ public class ProductController {
     }
 
     @PostMapping("/")
-    public Product createProduct(@RequestBody Product product){
-        return productService.createProduct(product);
+    public Product createProduct(@RequestBody ProductDTO productDTO){
+        return productService.createProduct(productDTO);
     }
 
-    @PutMapping("/")
-    public Product replaceProduct(@RequestBody Product product){
-        return productService.replaceProduct(product);
+    // Took request body as productDTO because on the fakeStore api the category is in string
+    @PutMapping("/{id}")
+    public Product replaceProduct(@PathVariable("id") long id, @RequestBody ProductDTO productDTO){
+        return productService.replaceProduct(id, productDTO);
     }
 
-    @PatchMapping("/")
-    public Product editProduct(@RequestBody Product product){
-        return productService.editProduct(product);
+    @PatchMapping("/{id}")
+    public Product editProduct(@PathVariable("id") long id, @RequestBody UpdateDescriptionOnlyDTO updateDescriptionOnlyDTO){
+        return productService.editProduct(id, updateDescriptionOnlyDTO);
     }
 
     @DeleteMapping("/{id}")
