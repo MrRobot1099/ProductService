@@ -13,6 +13,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class FakeStoreProductService implements ProductService {
@@ -68,8 +69,8 @@ public class FakeStoreProductService implements ProductService {
     }
 
     @Override
-    public Product editProduct(Long id, UpdateDescriptionOnlyDTO updateDescriptionOnlyDTO) {
-        FakeStoreProductDTO fakeStoreProductDTO = restTemplate.patchForObject("https://fakestoreapi.com/products/" + id, updateDescriptionOnlyDTO, FakeStoreProductDTO.class);
+    public Product editProduct(Long id, Map<String, String> dataToUpdate) {
+        FakeStoreProductDTO fakeStoreProductDTO = restTemplate.patchForObject("https://fakestoreapi.com/products/" + id, dataToUpdate, FakeStoreProductDTO.class);
         if (fakeStoreProductDTO == null) {
             return null;
         }
