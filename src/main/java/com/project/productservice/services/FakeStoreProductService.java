@@ -3,6 +3,7 @@ package com.project.productservice.services;
 import com.project.productservice.dtos.FakeStoreProductDTO;
 import com.project.productservice.dtos.ProductDTO;
 import com.project.productservice.dtos.UpdateDescriptionOnlyDTO;
+import com.project.productservice.exceptions.ProductNotFoundException;
 import com.project.productservice.model.Category;
 import com.project.productservice.model.Product;
 import org.springframework.http.HttpMethod;
@@ -24,12 +25,12 @@ public class FakeStoreProductService implements ProductService {
     }
 
     @Override
-    public Product getProductById(Long id) {
+    public Product getProductById(Long id) throws ProductNotFoundException {
         // call the rest template object and get the product by id
         FakeStoreProductDTO fakeStoreProductDTO = restTemplate.getForObject("https://fakestoreapi.com/products/" + id, FakeStoreProductDTO.class);
         // Convert the productDTO to product
         if (fakeStoreProductDTO == null) {
-            return null;
+            throw new ProductNotFoundException(id, "Invalid product id passed, Please retry with a valid product id");
         }
         return convertDtoToProduct(fakeStoreProductDTO);
     }

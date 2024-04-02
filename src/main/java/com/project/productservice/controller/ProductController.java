@@ -2,6 +2,7 @@ package com.project.productservice.controller;
 
 import com.project.productservice.dtos.ProductDTO;
 import com.project.productservice.dtos.UpdateDescriptionOnlyDTO;
+import com.project.productservice.exceptions.ProductNotFoundException;
 import com.project.productservice.model.Product;
 import com.project.productservice.services.ProductService;
 import org.springframework.http.HttpStatus;
@@ -22,7 +23,7 @@ public class ProductController {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<Product> getProduct(@PathVariable("id") Long id){
+    public ResponseEntity<Product> getProduct(@PathVariable("id") Long id) throws ProductNotFoundException {
         Product product = productService.getProductById(id);
         return new ResponseEntity<>(product, HttpStatus.OK);
     }
