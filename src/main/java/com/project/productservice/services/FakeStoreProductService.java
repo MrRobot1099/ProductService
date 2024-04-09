@@ -92,7 +92,7 @@ public class FakeStoreProductService implements ProductService {
 
         Category category = new Category();
         category.setCategoryName(productDTO.getCategory());
-        product.setCategory(category);
+//        product.setCategory(category);
         return product;
     }
 
