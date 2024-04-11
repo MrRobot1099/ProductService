@@ -26,12 +26,17 @@ public class SelfProductService implements ProductService{
 
     @Override
     public Product getProductById(Long id) throws ProductNotFoundException {
-        return null;
+        Optional<Product> product = productRepository.findById(id);
+        if(product.isPresent()) {
+            return product.get();
+        } else {
+            throw new ProductNotFoundException(id, "Invalid product id passed, Please retry with a valid product id");
+        }
     }
 
     @Override
     public List<Product> getAllProducts() {
-        return null;
+        return productRepository.findAll();
     }
 
     @Override
@@ -81,12 +86,41 @@ public class SelfProductService implements ProductService{
     }
 
     @Override
-    public Product updateProduct(Long id, Map<String, Object> dateToUpdate) {
-        return null;
+    public Product updateProduct(Long id, Product dataToUpdate) throws CategoryNotFoundException, ProductNotFoundException {
+
+        Optional<Product> getExistingProduct = productRepository.findById(id);
+        if (getExistingProduct.isPresent()) {
+            Product existingProduct = getExistingProduct.get();
+            if (dataToUpdate.getDescription() != null) {
+                existingProduct.setDescription(dataToUpdate.getDescription());
+            }
+            if (dataToUpdate.getImage() != null) {
+                existingProduct.setImage(dataToUpdate.getImage());
+            }
+            if (dataToUpdate.getPrice() != 0) {
+                existingProduct.setPrice(dataToUpdate.getPrice());
+            }
+            if (dataToUpdate.getTitle() != null) {
+                existingProduct.setTitle(dataToUpdate.getTitle());
+            }
+            if(dataToUpdate.getCategory() != null) {
+                Category category = dataToUpdate.getCategory();
+                Optional<Category> getCategory = categoryRepository.findById(category.getId());
+                if(getCategory.isPresent()) {
+                    existingProduct.setCategory(getCategory.get());
+                } else {
+                    throw new CategoryNotFoundException(category.getId(), "Invalid category details are passed, Please retry with a valid category details.");
+                }
+
+            }
+            return productRepository.save(existingProduct);
+        } else {
+            throw new ProductNotFoundException(id, "Invalid product id passed, Please retry with a valid product id");
+        }
     }
 
     @Override
     public void deleteProduct(Long id) {
-
+        productRepository.deleteById(id);
     }
 }

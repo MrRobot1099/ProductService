@@ -12,6 +12,6 @@ public interface ProductService {
     public List<Product> getAllProducts();
     public Product createProduct(Product product) throws CategoryNotFoundException;
     public Product replaceProduct(Long id, Product product) throws ProductNotFoundException, CategoryNotFoundException;
-    public Product updateProduct(Long id, Map<String, Object> dateToUpdate);
+    public Product updateProduct(Long id, Product dateToUpdate) throws CategoryNotFoundException, ProductNotFoundException;
     public void deleteProduct(Long id);
 }

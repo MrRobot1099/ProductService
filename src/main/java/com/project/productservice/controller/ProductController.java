@@ -48,7 +48,7 @@ public class ProductController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Product> updateProduct(@PathVariable("id") Long id, @RequestBody Map<String, Object> dataToUpdate){
+    public ResponseEntity<Product> updateProduct(@PathVariable("id") Long id, @RequestBody Product dataToUpdate) throws CategoryNotFoundException, ProductNotFoundException {
         return new ResponseEntity<>(productService.updateProduct(id, dataToUpdate), HttpStatus.OK);
     }
 

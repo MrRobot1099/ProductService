@@ -76,7 +76,7 @@ public class FakeStoreProductService implements ProductService {
     }
 
     @Override
-    public Product updateProduct(Long id, Map<String, Object> dataToUpdate) {
+    public Product updateProduct(Long id, Product dataToUpdate) {
         FakeStoreProductDTO fakeStoreProductDTO = restTemplate.patchForObject("https://fakestoreapi.com/products/" + id, dataToUpdate, FakeStoreProductDTO.class);
         if (fakeStoreProductDTO == null) {
             return null;
