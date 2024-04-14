@@ -1,5 +1,7 @@
 package com.project.productservice.services;
 
+import com.project.productservice.dtos.FakeStoreProductDTO;
+import com.project.productservice.dtos.ProductDTO;
 import com.project.productservice.exceptions.CategoryNotFoundException;
 import com.project.productservice.exceptions.ProductNotFoundException;
 import com.project.productservice.model.Category;
@@ -9,6 +11,7 @@ import com.project.productservice.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -25,40 +28,42 @@ public class SelfProductService implements ProductService{
     }
 
     @Override
-    public Product getProductById(Long id) throws ProductNotFoundException {
+    public ProductDTO getProductById(Long id) throws ProductNotFoundException {
         Optional<Product> product = productRepository.findById(id);
+
         if(product.isPresent()) {
-            return product.get();
+            return convertProductToDTO(product.get());
         } else {
             throw new ProductNotFoundException(id, "Invalid product id passed, Please retry with a valid product id");
         }
     }
 
     @Override
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
+    public List<ProductDTO> getAllProducts() {
+        List<Product> productList =  productRepository.findAll();
+        List<ProductDTO> productDTOList = null;
+        productDTOList = new ArrayList<>();
+        for(Product product : productList) {
+            productDTOList.add(convertProductToDTO(product));
+        }
+        return productDTOList;
     }
 
     @Override
     public Product createProduct(Product product) throws CategoryNotFoundException {
         Category category = product.getCategory();
-        Category getCategory = categoryRepository.findByCategoryNameIgnoreCase(category.getCategoryName());
+        Category getCategoryByName = categoryRepository.findByCategoryNameIgnoreCase(category.getCategoryName());
+        if(category.getId() ==null && category.getCategoryName() == null){
+            throw new CategoryNotFoundException(null, "Invalid category details passed, Please retry with a valid category details");
+        }
 
         if (category.getId() == null) {
-            if(getCategory == null) {
-                //first save the category in the DB
-                Category savedCategory = categoryRepository.save(category);
-                product.setCategory(savedCategory);
-            } else {
-                product.setCategory(getCategory);
+            if(getCategoryByName != null) {
+                product.setCategory(getCategoryByName);
             }
         } else {
             Optional<Category> categoryOptional = categoryRepository.findById(category.getId());
-            if(categoryOptional.isPresent()) {
-                product.setCategory(categoryOptional.get());
-            } else {
-                throw new CategoryNotFoundException(category.getId(), "Invalid category details are passed, Please retry with a valid category details.");
-            }
+            categoryOptional.ifPresent(product::setCategory);
         }
 
         return productRepository.save(product);
@@ -122,5 +127,20 @@ public class SelfProductService implements ProductService{
     @Override
     public void deleteProduct(Long id) {
         productRepository.deleteById(id);
+    }
+
+
+    public ProductDTO convertProductToDTO(Product product) {
+        ProductDTO productDTO = new ProductDTO();
+        productDTO.setId(product.getId());
+        productDTO.setTitle(product.getTitle());
+        productDTO.setPrice(product.getPrice());
+        productDTO.setDescription(product.getDescription());
+        productDTO.setImage(product.getImage());
+
+        Category category = new Category();
+        category.setCategoryName(product.getCategory().getCategoryName());
+        productDTO.setCategory(category.getCategoryName());
+        return productDTO;
     }
 }

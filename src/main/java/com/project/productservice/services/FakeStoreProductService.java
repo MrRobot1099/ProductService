@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-@Service
+@Service("fakeStoreProductService")
 public class FakeStoreProductService implements ProductService {
 
     RestTemplate restTemplate;
@@ -28,31 +28,31 @@ public class FakeStoreProductService implements ProductService {
     }
 
     @Override
-    public Product getProductById(Long id) throws ProductNotFoundException {
+    public ProductDTO getProductById(Long id) throws ProductNotFoundException {
         // call the rest template object and get the product by id
-        FakeStoreProductDTO fakeStoreProductDTO = restTemplate.getForObject("https://fakestoreapi.com/products/" + id, FakeStoreProductDTO.class);
+        ProductDTO fakeStoreProductDTO = restTemplate.getForObject("https://fakestoreapi.com/products/" + id, ProductDTO.class);
         // Convert the productDTO to product
         if (fakeStoreProductDTO == null) {
             throw new ProductNotFoundException(id, "Invalid product id passed, Please retry with a valid product id");
         }
-        return convertDtoToProduct(fakeStoreProductDTO);
+        return fakeStoreProductDTO;
     }
 
     @Override
-    public List<Product> getAllProducts() {
+    public List<ProductDTO> getAllProducts() {
 
         // using array of productDTO to get all the products from the fake store api
         // We are not using the list of productDTO because it is generic and in runtime it will not be able to convert the response to the list of productDTO
-        FakeStoreProductDTO[] fakeStoreProductDTOS = restTemplate.getForObject("https://fakestoreapi.com/products/", FakeStoreProductDTO[].class);
+        ProductDTO[] fakeStoreProductDTOS = restTemplate.getForObject("https://fakestoreapi.com/products/", ProductDTO[].class);
         // Convert the productDTO to product
         if (fakeStoreProductDTOS == null) {
             return null;
         }
-        List<Product> products = new ArrayList<>();
-        for (FakeStoreProductDTO fakeStoreProductDTO : fakeStoreProductDTOS) {
+        /*List<Product> products = new ArrayList<>();
+        for (ProductDTO fakeStoreProductDTO : fakeStoreProductDTOS) {
             products.add(convertDtoToProduct(fakeStoreProductDTO));
-        }
-        return products;
+        }*/
+        return List.of(fakeStoreProductDTOS);
     }
 
     @Override

@@ -20,19 +20,19 @@ public class ProductController {
 
     private ProductService productService;
 
-    ProductController(@Qualifier("selfProductService") ProductService productService) {
+    ProductController(@Qualifier(value = "fakeStoreProductService") ProductService productService) {
         this.productService = productService;
     }
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<Product> getProduct(@PathVariable("id") Long id) throws ProductNotFoundException {
-        Product product = productService.getProductById(id);
-        return new ResponseEntity<>(product, HttpStatus.OK);
+    public ResponseEntity<ProductDTO> getProduct(@PathVariable("id") Long id) throws ProductNotFoundException {
+        ProductDTO productDTO = productService.getProductById(id);
+        return new ResponseEntity<>(productDTO, HttpStatus.OK);
     }
 
     @GetMapping("/")
-    public ResponseEntity<List<Product>> getAllProducts(){
+    public ResponseEntity<List<ProductDTO>> getAllProducts(){
         return new ResponseEntity<>(productService.getAllProducts(), HttpStatus.OK);
     }
 
