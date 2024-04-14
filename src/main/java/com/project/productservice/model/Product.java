@@ -23,7 +23,6 @@ public class Product extends BaseModel{
     private Category category;
     private String description;
     private String image;
-
 }
 
 /*

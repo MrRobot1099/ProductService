@@ -24,9 +24,10 @@ public class Category extends BaseModel {
     @JsonManagedReference
     private List<Product> productList;
     private String categoryName;
+//    private String categoryDescription;
 
-    @Override
-    public String toString() {
-        return categoryName;
-    }
+//    @Override
+//    public String toString() {
+//        return categoryName;
+//    }
 }
