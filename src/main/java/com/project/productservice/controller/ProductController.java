@@ -1,7 +1,10 @@
 package com.project.productservice.controller;
 
+import com.project.productservice.commons.AuthenticationCommons;
 import com.project.productservice.dtos.ProductDTO;
+import com.project.productservice.dtos.Roles;
 import com.project.productservice.dtos.UpdateDescriptionOnlyDTO;
+import com.project.productservice.dtos.UserDTO;
 import com.project.productservice.exceptions.CategoryNotFoundException;
 import com.project.productservice.exceptions.ProductNotFoundException;
 import com.project.productservice.model.Product;
@@ -19,20 +22,35 @@ import java.util.Map;
 public class ProductController {
 
     private ProductService productService;
+    private AuthenticationCommons authenticationCommons;
 
-    ProductController(@Qualifier(value = "fakeStoreProductService") ProductService productService) {
+    ProductController(@Qualifier(value = "selfProductService") ProductService productService, AuthenticationCommons authenticationCommons) {
         this.productService = productService;
+        this.authenticationCommons = authenticationCommons;
     }
 
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ProductDTO> getProduct(@PathVariable("id") Long id) throws ProductNotFoundException {
+    @GetMapping("/{id}/{token}")
+    public ResponseEntity<ProductDTO> getProduct(@PathVariable("id") Long id, @PathVariable String token) throws ProductNotFoundException {
+        UserDTO user = authenticationCommons.validateToken(token);
+
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
         ProductDTO productDTO = productService.getProductById(id);
         return new ResponseEntity<>(productDTO, HttpStatus.OK);
     }
 
-    @GetMapping("/")
-    public ResponseEntity<List<ProductDTO>> getAllProducts(){
+    @GetMapping("/all/{token}")
+    public ResponseEntity<List<ProductDTO>> getAllProducts(@PathVariable String token) {
+        UserDTO user = authenticationCommons.validateToken(token);
+
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+
         return new ResponseEntity<>(productService.getAllProducts(), HttpStatus.OK);
     }
 

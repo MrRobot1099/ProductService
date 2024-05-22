@@ -13,7 +13,6 @@ public class ExceptionHandlerAdvice {
 
     // This method will handle ProductNotFoundException
     // Controller advice is used to handle exceptions globally
-    //
     @ExceptionHandler(ProductNotFoundException.class)
     public ResponseEntity<ExceptionDTO> handleProductNotFoundException(ProductNotFoundException productNotFoundException){
         ExceptionDTO exceptionDTO = new ExceptionDTO();
