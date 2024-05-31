@@ -7,6 +7,8 @@ import com.project.productservice.exceptions.CategoryNotFoundException;
 import com.project.productservice.exceptions.ProductNotFoundException;
 import com.project.productservice.model.Category;
 import com.project.productservice.model.Product;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpMessageConverterExtractor;
@@ -39,7 +41,7 @@ public class FakeStoreProductService implements ProductService {
     }
 
     @Override
-    public List<ProductDTO> getAllProducts() {
+    public Page<ProductDTO> getAllProducts(int pageNumber, int pageSize, String sortDir) {
 
         // using array of productDTO to get all the products from the fake store api
         // We are not using the list of productDTO because it is generic and in runtime it will not be able to convert the response to the list of productDTO
@@ -52,7 +54,7 @@ public class FakeStoreProductService implements ProductService {
         for (ProductDTO fakeStoreProductDTO : fakeStoreProductDTOS) {
             products.add(convertDtoToProduct(fakeStoreProductDTO));
         }*/
-        return List.of(fakeStoreProductDTOS);
+        return new PageImpl<>(List.of(fakeStoreProductDTOS));
     }
 
     @Override

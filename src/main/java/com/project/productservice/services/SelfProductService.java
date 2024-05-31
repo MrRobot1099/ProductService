@@ -9,6 +9,7 @@ import com.project.productservice.model.Product;
 import com.project.productservice.repository.CategoryRepository;
 import com.project.productservice.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -39,14 +40,19 @@ public class SelfProductService implements ProductService{
     }
 
     @Override
-    public List<ProductDTO> getAllProducts() {
-        List<Product> productList =  productRepository.findAll();
+    public Page<ProductDTO> getAllProducts(int pageNumber, int pageSize, String sortDir) {
+//        List<Product> productList =  productRepository.findAll(Pageable);
+        Page<Product> productPage=  productRepository.findAll(PageRequest.of(pageNumber,
+                pageSize,
+                sortDir.equals("asc") ? Sort.by("price").ascending() :
+                        Sort.by("price").descending()));
+
         List<ProductDTO> productDTOList = null;
         productDTOList = new ArrayList<>();
-        for(Product product : productList) {
+        for(Product product : productPage) {
             productDTOList.add(convertProductToDTO(product));
         }
-        return productDTOList;
+        return new PageImpl<>(productDTOList);
     }
 
     @Override

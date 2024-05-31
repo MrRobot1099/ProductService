@@ -6,11 +6,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/sample")
+@RequestMapping("/hello")
 public class SampleController {
-
-    @GetMapping("/say/{name}/{age}")
-    public String sample(@PathVariable("name") String personName, @PathVariable("age") int personAge) {
-        return "Say Hello to " + personName + "! Welcome to the world of Spring Boot!" + " Your age is " + personAge + " years.";
+    @GetMapping("/{name}/{number}")
+    public String sayHello(@PathVariable("name") String name, @PathVariable("number") int number) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 1; i <= number; i++) {
+            stringBuilder.append("Hello " + name + "\n");
+        }
+        //return "Hello " + name;
+        return stringBuilder.toString();
     }
 }

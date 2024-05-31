@@ -2,6 +2,8 @@ package com.project.productservice.repository;
 
 import com.project.productservice.model.Product;
 import com.project.productservice.repository.projections.ProductWithIdAndTitle;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,6 +16,8 @@ import java.util.Optional;
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
     Product save(Product product);
+
+    Page<Product> findAll(Pageable pageable);
 
     //This method will return a Product with only Id and Title.
     @Query("select p.id as id, p.title as title from Product p where p.price > 120000 and lower(p.title) like '%pro%'")

@@ -10,6 +10,7 @@ import com.project.productservice.exceptions.ProductNotFoundException;
 import com.project.productservice.model.Product;
 import com.project.productservice.services.ProductService;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,16 +43,18 @@ public class ProductController {
         return new ResponseEntity<>(productDTO, HttpStatus.OK);
     }
 
-    @GetMapping("/all/{token}")
-    public ResponseEntity<List<ProductDTO>> getAllProducts(@PathVariable String token) {
-        UserDTO user = authenticationCommons.validateToken(token);
+    @GetMapping("/")
+    public ResponseEntity<Page<ProductDTO>> getAllProducts(@RequestParam("pageNumber") int pageNumber,
+                                                           @RequestParam("pageSize") int pageSize,
+                                                           @RequestParam("sortDir") String sortDir) {
+        /*UserDTO user = authenticationCommons.validateToken(token);
 
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
+        }*/
 
 
-        return new ResponseEntity<>(productService.getAllProducts(), HttpStatus.OK);
+        return new ResponseEntity<>(productService.getAllProducts(pageNumber, pageSize, sortDir), HttpStatus.OK);
     }
 
     @PostMapping("/")
