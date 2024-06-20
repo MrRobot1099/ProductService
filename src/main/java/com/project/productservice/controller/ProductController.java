@@ -25,19 +25,26 @@ public class ProductController {
     private ProductService productService;
     private AuthenticationCommons authenticationCommons;
 
-    ProductController(@Qualifier(value = "selfProductService") ProductService productService, AuthenticationCommons authenticationCommons) {
+    ProductController(@Qualifier(value = "fakeStoreProductService") ProductService productService, AuthenticationCommons authenticationCommons) {
         this.productService = productService;
         this.authenticationCommons = authenticationCommons;
     }
 
 
-    @GetMapping("/{id}/{token}")
+    /*@GetMapping("/{id}/{token}")
     public ResponseEntity<ProductDTO> getProduct(@PathVariable("id") Long id, @PathVariable String token) throws ProductNotFoundException {
         UserDTO user = authenticationCommons.validateToken(token);
 
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
+
+        ProductDTO productDTO = productService.getProductById(id);
+        return new ResponseEntity<>(productDTO, HttpStatus.OK);
+    }*/
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductDTO> getProduct(@PathVariable("id") Long id) throws ProductNotFoundException {
 
         ProductDTO productDTO = productService.getProductById(id);
         return new ResponseEntity<>(productDTO, HttpStatus.OK);

@@ -9,6 +9,7 @@ import com.project.productservice.model.Category;
 import com.project.productservice.model.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpMessageConverterExtractor;
@@ -24,19 +25,30 @@ import java.util.Objects;
 public class FakeStoreProductService implements ProductService {
 
     RestTemplate restTemplate;
+    RedisTemplate redisTemplate;
 
-    FakeStoreProductService(RestTemplate restTemplate) {
+    FakeStoreProductService(RestTemplate restTemplate, RedisTemplate redisTemplate) {
         this.restTemplate = restTemplate;
+        this.redisTemplate = redisTemplate;
     }
 
     @Override
     public ProductDTO getProductById(Long id) throws ProductNotFoundException {
+
+        // check if the product is present in the cache
+        ProductDTO productDTO = (ProductDTO) redisTemplate.opsForHash().get("PRODUCT", "PRODUCT_" + id);
+        if (Objects.nonNull(productDTO)) {
+            return productDTO;
+        }
         // call the rest template object and get the product by id
         ProductDTO fakeStoreProductDTO = restTemplate.getForObject("https://fakestoreapi.com/products/" + id, ProductDTO.class);
         // Convert the productDTO to product
         if (fakeStoreProductDTO == null) {
             throw new ProductNotFoundException(id, "Invalid product id passed, Please retry with a valid product id");
         }
+        // store the product in the cache
+        redisTemplate.opsForHash().put("PRODUCT", "PRODUCT_" + id, fakeStoreProductDTO);
+
         return fakeStoreProductDTO;
     }
 
