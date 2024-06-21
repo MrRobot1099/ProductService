@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Map;
@@ -24,10 +25,12 @@ public class ProductController {
 
     private ProductService productService;
     private AuthenticationCommons authenticationCommons;
+    private RestTemplate restTemplate;
 
-    ProductController(@Qualifier(value = "fakeStoreProductService") ProductService productService, AuthenticationCommons authenticationCommons) {
+    ProductController(@Qualifier(value = "fakeStoreProductService") ProductService productService, AuthenticationCommons authenticationCommons, RestTemplate restTemplate) {
         this.productService = productService;
         this.authenticationCommons = authenticationCommons;
+        this.restTemplate = restTemplate;
     }
 
 
@@ -45,6 +48,8 @@ public class ProductController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ProductDTO> getProduct(@PathVariable("id") Long id) throws ProductNotFoundException {
+
+        ResponseEntity<String> responseEntity  = restTemplate.getForEntity("http://UserService/user/10", String.class);
 
         ProductDTO productDTO = productService.getProductById(id);
         return new ResponseEntity<>(productDTO, HttpStatus.OK);

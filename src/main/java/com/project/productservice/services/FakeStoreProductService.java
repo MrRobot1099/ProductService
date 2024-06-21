@@ -35,6 +35,7 @@ public class FakeStoreProductService implements ProductService {
     @Override
     public ProductDTO getProductById(Long id) throws ProductNotFoundException {
 
+        System.out.println("Got the request in Product Service");
         // check if the product is present in the cache
         ProductDTO productDTO = (ProductDTO) redisTemplate.opsForHash().get("PRODUCT", "PRODUCT_" + id);
         if (Objects.nonNull(productDTO)) {
